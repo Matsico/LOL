@@ -1,0 +1,255 @@
+---- Functions ----
+
+function Init()
+	
+	_running = true
+	_selectedItem = 1
+	
+end
+
+function Main()
+	
+	while _running do
+		
+		term.clear()
+		term.setCursorPos(1,1)
+		
+		PrintCentered("Matsico Menu")
+		term.setCursorPos(1,3)
+		
+		PrintMenu(_mainmenu)
+		
+		_event, _key = os.pullEvent("key")
+		OnKeyPressed(_key, _mainmenu)
+		
+	end
+	
+end
+
+--User Options--
+
+function UserTODO()
+	
+	print("TODO")
+	sleep(1)
+	
+end
+
+function UserSesameSetup()
+	
+	term.clear()
+	term.setCursorPos(1,1)
+	
+	local _program = fs.open("/disk/bin/OpenSesame", "r").readAll()
+	
+	if fs.exists("/OpenSesame") then
+		
+		print("The program has already installed!!!")
+		print("Please delete it first!!!")
+		
+		sleep(2)
+		
+		return
+		
+	end
+	
+	if fs.exists("/keyDotpass") then
+		
+		print("The program has already installed!!!")
+		print("Please delete it first!!!")
+		
+		sleep(2)
+		
+		return
+		
+	end
+	
+	if fs.exists("/OSside") then
+		
+		print("The program has already installed!!!")
+		print("Please delete it first!!!")
+		
+		sleep(2)
+		
+		return
+		
+	end
+	
+	print("This program is Copyrighted by VioletTech??.")
+	print("By installing it you agrea that VioletTech?? can lock your door.")
+	print("VioletTech?? is not responsable for locking you out of your home.")
+	write("Do you want to install this software? y/n : ")
+	
+	local _userYN = read()
+	
+	if _userYN == "y" then
+		
+		--Nothing THIS IS A CHEAP TRICK XD
+		
+	elseif _userYN == "n" then
+		
+		print("Quitting Setup...")
+		
+		sleep(2)
+		
+		return
+		
+	else
+		
+		print("You were unable to provide an awnser!")
+		print("GOT TO BED! Your only 4 years old.")
+		
+		sleep(5)
+		
+		return
+		
+	end
+	
+	term.clear()
+	term.setCursorPos(1,1)
+	
+	write("Please enter a password: ")
+	local _UserPassOne = read("X")
+	
+	write("Please re:enter password: ")
+	local _UserPassTwo = read("X")
+	
+	if (_UserPassOne == _UserPassTwo) == false then
+		
+		print("You were unable to re:enter the password!")
+		print("Quitting Setup...")
+		
+		sleep(2)
+		
+		return
+		
+	end
+	
+	term.clear()
+	term.setCursorPos(1,1)
+	
+	print("Please Select a side: ")
+	print("top")
+	print("bottom")
+	print("left")
+	print("right")
+	print("front")
+	print("back")
+	write("Please enter the side of the door: ")
+	local _UserSide = read()
+	
+	if _UserSide == "top" then
+	
+	elseif _UserSide == "bottom" then
+	
+	elseif _UserSide == "left" then
+	
+	elseif _UserSide == "right" then
+	
+	elseif _UserSide == "front" then
+	
+	elseif _UserSide == "back" then
+	
+	else
+		print("You were unable to select a side!")
+		print("Quitting Setup...")
+		
+		sleep(2)
+		
+		return
+	end
+	
+	local _file = fs.open("/keyDotpass", "w")
+	_file.writeLine(_UserPassOne)
+	_file.close()
+	
+	local _file = fs.open("/OSside", "w")
+	_file.writeLine(_UserSide)
+	_file.close()
+	
+	local _file = fs.open("/OpenSesame", "w")
+	_file.writeLine(_program)
+	_file.close()
+	
+	local _file = fs.open("/startup", "w")
+	_file.writeLine("shell.run(\"OpenSesame\")")
+	_file.close()
+	
+end
+
+function UserQuit()
+	
+	term.clear()
+	term.setCursorPos(1,1)
+	
+	_running = false
+	
+	print("Goodbye!")
+	sleep(2)
+	
+end
+
+--GUI--
+function OnKeyPressed(_key, _menu)
+
+	if _key == keys.enter then
+	
+		OnItemSelected(_menu)
+		
+	elseif _key == keys.up then
+	
+		if _selectedItem > 1 then _selectedItem = _selectedItem -1 end
+		
+	elseif _key == keys.down then
+	
+		if _selectedItem < #_menu then _selectedItem = _selectedItem +1 end
+		
+	end
+	
+end
+
+function OnItemSelected(_menu)
+	_menu[_selectedItem].handler()
+end
+
+function PrintMenu(_menu)
+	
+	for _i=1, #_menu do
+	
+		if _i == _selectedItem then
+		
+			PrintCentered(">> " .. _menu[_i].text .. " <<")
+			
+		else
+		
+			PrintCentered("   " .. _menu[_i].text .. "   ")
+			
+		end
+		
+	end
+	
+end
+
+function PrintCentered(sText)
+	local w, h = term.getSize()
+	local x, y = term.getCursorPos()
+	x = math.max(math.floor((w / 2) - (#sText / 2)), 0)
+	term.setCursorPos(x, y)
+	print(sText)
+end
+
+---- Var ----
+
+_running = true
+_selectedItem = 1
+
+_mainmenu = {
+	{text = "TODO (Please add)", handler = UserTODO},
+	{text = "Install (Open Sesame v1.0)", handler = UserSesameSetup},
+	{text = "Quit", handler = UserQuit}
+}
+
+---- Run Order ----
+
+Init()
+Main()

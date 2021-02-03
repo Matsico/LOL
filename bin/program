@@ -1,0 +1,49 @@
+----Functions----
+
+function Main()
+	
+	while true do
+	
+		_pullevent = os.pullEvent
+		os.pullEvent = os.pullEventRaw
+		
+		term.clear()
+		term.setCursorPos(1,1)
+		
+		print("Open Sesame: V1.0")
+		
+		term.setCursorPos(1,3)
+		write("Enter password: ")
+		
+		local _input = read("*")
+		local _key = fs.open("keyDotpass", "r").readLine()
+		
+		if _input == _key then
+			
+			local _side = fs.open("OSside", "r").readLine()
+			redstone.setOutput(_side, true)
+	  os.pullEvent = _pullEvent
+ 		sleep(5)
+			redstone.setOutput(_side, false)
+			
+		else
+			
+			term.clear()
+			term.setCursorPos(1,1)
+			
+			print("WRONG!!!")
+			sleep(5)
+			
+		end
+		
+	end
+	
+end
+
+---- Var ----
+
+_pullevent = nil
+
+---- Run Order ----
+
+Main()
